@@ -8,36 +8,63 @@ using XcentiumCodingChallege.Models;
 
 namespace XcentiumCodingChallege.Services
 {
-    public static class URLDownloader
+    public class URLDownloader
     {
-        public static List<string> ImageDownloader(string url)
+        private HtmlDocument document;
+
+        public URLDownloader(string url)
         {
-            HtmlDocument document = new HtmlWeb().Load(url);
-            var urls = document.DocumentNode.Descendants("img")
-                                            .Select(e => e.GetAttributeValue("src", null))
-                                            .Where(s => !String.IsNullOrEmpty(s)).Distinct().ToList();
-            return urls;
-        }
-
-        public static List<string> WordDownloader(string url)
-        {
-            List<string> allData = new List<string>();
-            Regex regexItem = new Regex("[^a-zA-Z_.]+");
-
-            var doc = new HtmlWeb().Load(url);
-            var words = doc.DocumentNode.SelectSingleNode("//body").DescendantsAndSelf().Where(y => y.NodeType == HtmlNodeType.Text && y.ParentNode.Name != "script" && y.InnerHtml != string.Empty).Select(x => x.InnerHtml);
-
-            foreach (var word in words)
+            try
             {
-                allData.AddRange(word.Split(' ').Where(x => x != string.Empty && x.Length > 1));
+                document = new HtmlWeb().Load(url);
             }
-            
-            return allData;
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
-        private static HtmlDocument DownloadHtml(string url)
+        public List<string> ImageDownloader()
         {
-            return new HtmlWeb().Load(url);
+            try
+            {
+                List<string> imageType = new List<string> { ".png", ".gif", ".ashx" };
+
+                var urls = document.DocumentNode.Descendants("img")
+                                                .Select(e => e.GetAttributeValue("src", null))
+                                                .Where(s => !String.IsNullOrEmpty(s) && !imageType.Any(y => s.Contains(y))).Distinct().ToList();
+
+                return urls;
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
         }
+
+        public List<string> WordDownloader()
+        {
+            try
+            {
+
+                List<string> allData = new List<string>();
+                Regex regexItem = new Regex("[^a-zA-Z']+");
+
+                var words = document.DocumentNode.SelectSingleNode("//body").DescendantsAndSelf().Where(y => y.NodeType == HtmlNodeType.Text && y.ParentNode.Name != "script" && y.InnerHtml != string.Empty).Select(x => x.InnerHtml);
+
+                foreach (var word in words)
+                {
+                    allData.AddRange(word.Split(' ').Where(x => x != string.Empty && x.Length > 1 && !regexItem.Match(x).Success));
+                }
+
+
+                return allData;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
     }
 }

@@ -1,0 +1,55 @@
+﻿@model XcentiumCodingChallege.Models.PageContent
+
+@if (Model != null)
+{
+    if (Model.ImageUrls != null)
+    {
+        int count = 1;
+        int imageLength = Model.ImageUrls.Count();
+
+        <div class="slideshow-container">
+            @foreach (var images in Model.ImageUrls)
+            {
+                string imageUrl = string.Empty;
+                Uri result;
+                if (Uri.TryCreate(images, UriKind.Absolute, out result))
+                {
+                    imageUrl = images;
+                }
+                else
+                {
+                    imageUrl = Model.website + images;
+                }
+
+                <div class="mySlides fade">
+                    <div class="numbertext">@count / @imageLength</div>
+                    <img src="@imageUrl" style="width:100%">
+                    <div class="text">Caption @count</div>
+                </div>
+                count++;
+            }
+
+            <a class="prev" onclick="plusSlides(-1)">❮</a>
+            <a class="next" onclick="plusSlides(1)">❯</a>
+
+        </div>
+    }
+    if (Model.Count > 0)
+    {
+        <div class="row">
+            <p>Total Word Count <span>@Model.Count</span></p>
+        </div>
+    }
+    if (Model.Words != null)
+    {
+        <div class="row">
+            <ul>
+                @foreach (var word in Model.Words)
+                {
+                    <li>@word.Text - @word.Count</li>
+                }
+            </ul>
+        </div>
+    }
+}
+
