@@ -28,13 +28,13 @@ namespace XcentiumCodingChallege.Services
         {
             try
             {
-                //Ignore images with the following extension
-                List<string> imageType = new List<string> { ".png", ".gif", ".ashx" };
+                //images with the following extension
+                List<string> imageType = new List<string> { ".jpg",".jpeg" };
 
                 //retrieve all src from website
                 var urls = document.DocumentNode.Descendants("img")
                                                 .Select(e => e.GetAttributeValue("src", null))
-                                                .Where(s => !String.IsNullOrEmpty(s) && !imageType.Any(y => s.Contains(y))).Distinct().ToList();
+                                                .Where(s => !String.IsNullOrEmpty(s) && imageType.Any(y => s.Contains(y))).Distinct().ToList();
 
                 return urls;
             }
