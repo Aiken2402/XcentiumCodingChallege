@@ -21,12 +21,17 @@ namespace XcentiumCodingChallege.Controllers
         {
             try
             {
+                //check if url is being sent
                 if (string.IsNullOrEmpty(url))
                 {
                     return RedirectToAction("ErrorMessage");
                 }
+
+                //load url data into model
                 PageContent pageContent = new PageContent();
                 pageContent = APIRequestor.LoadUrl(url).Result;
+
+                //return partial view
                 return PartialView(pageContent);
             }
             catch
@@ -37,6 +42,7 @@ namespace XcentiumCodingChallege.Controllers
 
         public ActionResult ErrorMessage()
         {
+            //throw data not found
             return PartialView();
         }
     }

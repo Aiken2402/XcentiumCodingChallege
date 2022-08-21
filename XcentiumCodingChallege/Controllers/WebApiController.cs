@@ -21,11 +21,14 @@ namespace XcentiumCodingChallege.Controllers
             {
                 URLDownloader urlDownloader = new URLDownloader(url);
 
+                //get website url 
                 Uri currentURL = new Uri(url);
                 string path = String.Format("{0}{1}{2}{3}", currentURL.Scheme, Uri.SchemeDelimiter, currentURL.Authority, (currentURL.AbsolutePath.Length > 1) ? currentURL.AbsolutePath.Substring(0, url.IndexOf("/") + 1): currentURL.AbsolutePath);
 
+                //get the list of words
                 words = urlDownloader.WordDownloader();
 
+                //bind website data to model
                 model.website = path;
                 model.ImageUrls = urlDownloader.ImageDownloader();
                 model.Count = words.Count();
